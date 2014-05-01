@@ -1,62 +1,64 @@
-// //import http method
-// var http = require ('http');
+var bodyParser = require('body-parser')
+//Important note: 
+var express = require('express')
 
-// onRequest = function(req, res) {
-// 	res.writeHead(200, {
-// 		'Connection': 'close',
-// 		'Content-Type': 'text/html'
-// 	});
-// 	res.end('<h1> Hello world</h1>');
-// }
+var app = express()
+app.use(function (req, res, next){
+	res.setHeader('Access-Control-Allow-Origin', '*')
 
-// http.createServer(onRequest).listen(12200);
 
-var http = require('http')
+	next()
+})
+app.use(bodyParser())
 
 var messages = [
 	{message: 'Thad has a sweet hat!'},
 	{message: 'Dont drink and drive!'}
-] //in memory (not database)
+] 
 
-// var onRequest = function (req, res) {
-// 	console.log(req.method);
-// 	console.log('serving...');
-// 	res.writeHead(200, {
-// 		// 'Content-Type': 'text/html'
+
+// can create lots of these... is '/' because it is the default location;
+app.get('/', function (req, res) {
+	console.log('I just did a GET!')
+	res.json(messages)
+})
+app.post('/', function (req, res) {
+	var message = req.body
+	messages.push(message)
+	res.json(messages)
+})
+
+app.listen(12200, function (){
+	console.log('I am listening...')
+})
+
+// var http = require('http')
+
+// var messages = [
+// 	{message: 'Thad has a sweet hat!'},
+// 	{message: 'Dont drink and drive!'}
+// ] /
+
+// var server = http.createServer(function (req, res) {
+
+//   if (req.method == 'POST') {
+//    var postData = '';
+//    req.on('data', function(chunk) {
+//     postData += chunk.toString();
+//    });
+//    req.on('end', function() {
+//     var msg = JSON.parse(postData)
+//     messages.push(msg)
+//    });
+
+//   } else if (req.method === 'GET') {
+//   	res.writeHead(201, {
 // 		'Content-Type': 'application/json',
 // 		'Access-Control-Allow-Origin': '*' 
-//		//"*" means allow anything, generally a bad practice in 
-//		//real life
 
 // 	});
 
-	// res.end('<h1> Hello World </h1>');
-// 	res.end(JSON.stringify(messages));
-// }
-var server = http.createServer(function (req, res) {
-	
-  if (req.method == 'POST') {
-   var postData = '';
-   req.on('data', function(chunk) {
-    postData += chunk.toString();
-   });
-   req.on('end', function() {
-    var msg = JSON.parse(postData)
-    messages.push(msg)
-   });
-
-  } else if (req.method === 'GET') {
-  	res.writeHead(201, {
-		// 'Content-Type': 'text/html'
-		'Content-Type': 'application/json',
-		'Access-Control-Allow-Origin': '*' 
-		//"*" means allow anything, generally a bad practice in 
-		//real life
-
-	});
-
-	// res.end('<h1> Hello World </h1>');
-	res.end(JSON.stringify(messages))
-  }
-});
-server.listen(12200);
+// 	res.end(JSON.stringify(messages))
+//   }
+// });
+// server.listen(12200);
